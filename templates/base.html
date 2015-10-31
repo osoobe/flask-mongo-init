@@ -1,0 +1,42 @@
+{% import "macro/forms.html" as forms %}
+<!DOCTYPE html>
+<html class="{% block html_class %}{{html_class}}{% endblock %}" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="{{config.METADATA.description}}">
+    <meta name="author" content="{{config.METADATA.author.name}}">
+    <title>
+      {% block title %}
+      {{title|default(config.METADATA.application_name)}}
+      {% endblock %}
+    </title>
+    {% include 'bit/styles.html' %}
+    {% block head %}
+    {% endblock %}
+    {% include 'bit/analytics.html' %}
+    {% block styles %}
+    {% endblock %}
+    <!--[if lt IE 9]>
+     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body id="page-top" class="index">
+    <div id="fb-root"></div><!--Something A got with Facebook-->
+    {% block header %}
+      {% include 'bit/header.html' %}
+    {% endblock %}
+    <div id="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    {% include 'bit/footer.html' %}
+    {% include 'bit/scripts.html' %}
+    {% block scripts %}
+    {% endblock %}
+  </body>
+</html>

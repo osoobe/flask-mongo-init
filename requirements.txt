@@ -1,0 +1,8 @@
+Flask==0.10
+flask-htpasswd==0.3.0
+WTForms==2.0
+mongoengine==0.10
+flask_mongoengine==0.7
+Flask-Login==0.2.9
+Flask-WTF==0.8.2
+requests==2.3.0

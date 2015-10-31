@@ -1,0 +1,15 @@
+local.wsgi
+temp/
+repo/*/
+*.pyc
+~*
+*~
+appserver_config.py
+.htpasswd
+*.zip
+*.log
+static/dst
+static/ext
+static/min
+
+/vendor/

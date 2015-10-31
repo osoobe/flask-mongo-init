@@ -1,0 +1,61 @@
+.row{
+    &.row-tb-pads{
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+}
+
+
+.generate-margins(@n, @i: 1) when (@i =< @n) {
+  .margin-bm-@{i}0 {
+    margin-bottom: (@i * 10px);
+  }
+  .margin-rt-@{i}0 {
+    margin-right: (@i * 10px);
+  }
+  .margin-lt-@{i}0 {
+    margin-left: (@i * 100px);
+  }
+  .margin-tp-@{i}0 {
+    margin-top: (@i * 10px);
+  }
+  .generate-margins(@n, (@i + 1));
+}
+
+.generate-width-size(@n, @i: 10) when (@i =< @n*10) {
+  .el-width-@{i} {
+    width: (@i * 1%);
+  }
+  .generate-width-size(@n, (@i + 10));
+}
+
+/**
+Generate font size of 18n, where n is an integer and 0 < n < 11.
+*/
+
+.generate-font-size(@n, @i: 1) when (@i =< @n) {
+  .font-size-@{i}x {
+    @media (max-width: 768px){
+      font-size: (@i * 8pt) !important;
+    }
+    @media (min-width: 768px){
+      font-size: (@i * 12pt) !important;
+    }
+  }
+  .font-sm-@{i}x {
+    @media (max-width: 959px){
+      font-size: (@i * 8pt) !important;
+    }
+  }
+  .font-xs-@{i}x {
+    @media (max-width: 418px){
+      font-size: (@i * 6pt) !important;
+    }
+  }
+  .generate-font-size(@n, (@i + 1));
+}
+
+
+.generate-margins(10);
+.generate-width-size(10);
+.generate-font-size(10);

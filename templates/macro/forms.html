@@ -1,0 +1,249 @@
+# macro field_errors(field)
+  # for error in field.errors
+    <p class="help-block">{{error}}</p>
+  # endfor
+# endmacro
+
+
+# macro field_description(field)
+  # if field.description
+    <p class="help-block">{{field.description}}</p>
+  # endif
+# endmacro
+
+
+# macro input_field(field, label=True, placeholder='')
+  {% if not placeholder %}
+    {% set placeholder = field.label.text %}
+  {% endif %}
+  <div class="form-group {{'has-error' if field.errors}}"  {% if not label %} data-toggle="tooltip" data-placement="top" title="{{field.label.text}}" {% endif %} >
+    {% if label %}
+      {% if field.flags.required %}<span class="require"> * </span>{% endif %}
+        {{field.label(class='control-label')}}
+    {% endif %}
+    {% if field.flags.required %}
+      {{field(class='form-control form-required', type=type, required='required', placeholder=placeholder, **kwargs)}}
+    {% else %}
+      {{field(class='form-control', type=type, placeholder=field.label.text, **kwargs)}}
+    {% endif %}
+    {{field_errors(field)}}
+    {{field_description(field)}}
+  </div>
+# endmacro
+
+
+# macro text_field(field)
+  {{input_field(field, type='text', **kwargs)}}
+# endmacro
+
+
+# macro password_field(field)
+  {{input_field(field, type='password', **kwargs)}}
+# endmacro
+
+# macro tel_field(field)
+ {{input_field(field, type='tel', **kwargs)}}
+#endmacro
+
+# macro number_field(field)
+  {{input_field(field, type='number', **kwargs)}}
+# endmacro
+
+
+# macro date_field(field, placeholder="YYYY-MM-DD")
+  {{input_field(field, type='date', placeholder=placeholder, **kwargs)}}
+# endmacro
+
+
+# macro email_field(field)
+  {{input_field(field, type='email', pattern="^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$", **kwargs)}}
+# endmacro
+
+
+# macro select_field(field)
+  {{input_field(field, value=field.data, **kwargs)}}
+# endmacro
+
+
+# macro hidden_field(field)
+  {{field(type='hidden', **kwargs)}}
+# endmacro
+
+
+# macro textarea_field(field, rows=4)
+  <div class="form-group {{'has-error' if field.errors}}">
+    {{field.label(class='control-label')}}
+        {% if field.flags.required %}
+    {{field(class='form-control form-required', rows=rows, **kwargs)}}
+      {% else %}
+    {{field(class='form-control', rows=rows, **kwargs)}}
+      {% endif %}
+    {{field_errors(field)}}
+    {{field_description(field)}}
+  </div>
+# endmacro
+
+
+# macro checkbox_field(field)
+  <div class="checkbox {{'has-error' if field.errors}}">
+    <label class="{{'text-muted' if 'disabled' in kwargs}}">
+      {{field(**kwargs)}} {{field.label.text}}
+    {% if field.flags.required %}
+      *
+    {% endif %}
+    </label>
+    {{field_errors(field)}}
+    {{field_description(field)}}
+  </div>
+# endmacro
+
+
+# macro list_input_field(field, type, horizontal=True, label=True)
+  <div class="form-group {{'has-error' if field.errors}}">
+    {% if label %}
+      {% if field.flags.required %}<span class="require"> * </span>{% endif %}
+      {{field.label(class='control-label')}}
+    {% endif %}
+    {{field_description(field)}}
+      <div class="{{type}}">
+    # for key, value in field.choices
+        <label style="{{'display: block' if not horizontal}}">
+          <input type="{{type}}" name="{{field.name}}" value="{{key}}"
+            # if field.data and key in field.data
+              checked
+            # endif
+             # if field.flags.required and loop.index == 1
+             required
+             # endif
+          > {{value}}
+        </label>
+    # endfor
+      </div>
+    {{field_errors(field)}}
+  </div>
+# endmacro
+
+# macro radio_field(field)
+  <div class="form-group {{'has-error' if field.errors}}">
+    {% if field.flags.required %}<span class="require"> * </span>{% endif %}
+    {{field.label(class='control-label')}}
+    {{field_description(field)}}
+    # for key, value, _ in field.iter_choices()
+        <div class="radio">
+            <label>
+                <input type="radio" name="{{ field.id }}" id="{{ field.id }}" value="{{ key }}"
+                # if field.data and key in field.data
+                  checked
+                # endif
+                 # if field.flags.required
+                 required
+                 # endif
+                >{{ value }}
+            </label>
+        </div>
+    # endfor
+    {{field_errors(field)}}
+  </div>
+# endmacro
+
+
+# macro multiple_checkbox_field(field)
+  {{list_input_field(field, 'checkbox', **kwargs)}}
+# endmacro
+
+
+# macro radio_field(field)
+  {{list_input_field(field, 'radio')}}
+# endmacro
+
+# macro oauth_fields(name, fields, checkmark, help)
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#oauth" href="#{{slugify(name)}}">{{name}}</a>
+        <i class="fa fa-check pull-right {{'hide' if not checkmark}}"></i>
+      </h4>
+    </div>
+    <div id="{{slugify(name)}}" class="panel-collapse collapse">
+      <div class="panel-body">
+        # for field in fields:
+          {{text_field(field)}}
+        # endfor
+        # if help
+          <p class="help-block">{{help|safe}}</p>
+        # endif
+      </div>
+    </div>
+  </div>
+# endmacro
+
+
+# macro cascade_input_field(field, field2, type='text', type2='text', label=true)
+  <div class="form-group {{'has-error' if field.errors}}">
+    <div class="row">
+      <div class="col-lg-6"  >
+          {% if label %}
+            {% if field.flags.required %}<span class="require"> * </span>{% endif %}
+            {{field.label(class='control-label')}}
+          {% endif %}
+          {% if field.flags.required %}
+          {{field(class='form-control form-required', type=type, **kwargs)}}
+            {% else %}
+          {{field(class='form-control', type=type, **kwargs)}}
+            {% endif %}
+          {{field_errors(field)}}
+          {{field_description(field)}}
+      </div>
+      <div class="col-lg-6" >
+          {% if label %}
+            {{field2.label(class='control-label')}}{% if field2.flags.required %}<span class="require"> * </span>{% endif %}
+          {% endif %}
+            {% if field2.flags.required %}
+                {{field2(class='form-control form-required', type=type2, **kwargs)}}
+            {% else %}
+                {{field2(class='form-control', type=type2, **kwargs)}}
+            {% endif %}
+          {{field_errors(field2)}}
+          {{field_description(field2)}}
+      </div>
+    </div>
+  </div>
+# endmacro
+
+# macro dropdown_prefilled_field(field, options, dropdown_label="Action", type='text')
+  <div class="form-group {{'has-error' if field.errors}}" >
+    {% if field.flags.required %}<span class="require"> * </span>{% endif %}
+    {{field.label(class='control-label')}}
+    <div class="input-group">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> {{ dropdown_label }} <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          {% for item in options %}
+          <li class="{{field.id}}" ><a href="#"> {{item}} </a></li>
+          {% endfor %}
+        </ul>
+      </div><!-- /btn-group -->
+        {% if field.flags.required %}
+            {{field(class='form-control form-required', type=type, required='required', **kwargs)}}
+        {% else %}
+            {{field(class='form-control', type=type, **kwargs)}}
+        {% endif %}
+        {{field_errors(field)}}
+        {{field_description(field)}}
+    </div><!-- /input-group -->
+</div>
+# endmacro
+
+# macro raw_field(field, type='text', raw_attribute="")
+  <div class="form-group {{'has-error' if field.errors}}"    >
+    {% if field.flags.required %}<span class="require"> * </span>{% endif %}
+    {{field.label(class='control-label')}}
+    {{field_description(field)}}
+    <input type="{{type}}" name="{{ field.id }}" id="{{ field.id }}" {{raw_attribute}}
+     # if field.flags.required
+     required
+     # endif
+    >
+    {{field_errors(field)}}
+  </div>
+# endmacro
