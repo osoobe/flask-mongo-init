@@ -48,14 +48,12 @@ Use `./run.py -s` or `python run.py -s` to run the application.
 
 ## Server App via Apache2
 
-See [Flask mod_wsgi documentation](http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/)
-on how to server flask application via Apache2.
+See [Flask mod_wsgi documentation](http://flask.pocoo.org/docs/0.10/deploying/mod_wsgi/) on how to server flask application via Apache2.
 
-If you wish to see Flask Debug messages via Apache2,
-see [Flask mod_wsgi debug mode](https://gist.github.com/b4oshany/350305ef729fcc70fda1)
+If you wish to see Flask Debug messages via Apache2, see [Flask mod_wsgi debug mode](https://gist.github.com/b4oshany/350305ef729fcc70fda1)
 
 
-*** Inspired by [GAE-INIT]
+***Inspired by [GAE-INIT]***
 
 
 [Python PIP]: https://pypi.python.org/pypi/pip
